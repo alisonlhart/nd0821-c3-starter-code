@@ -22,16 +22,17 @@ def train_model(X_train, y_train):
     model
         Trained machine learning model.
     """
-    
+
     rfc = RandomForestClassifier(random_state=42)
     rfc.fit(X_train, y_train)
-    
+
     return rfc
 
 
 def compute_model_metrics(y, preds):
     """
-    Validates the trained machine learning model using precision, recall, and F1.
+    Validates the trained machine learning model using precision,
+    recall, and F1.
 
     Inputs
     ------
@@ -52,7 +53,7 @@ def compute_model_metrics(y, preds):
 
 
 def inference(model, X):
-    """ Run model inferences and return the predictions.
+    """Run model inferences and return the predictions.
 
     Inputs
     ------
@@ -68,39 +69,51 @@ def inference(model, X):
     preds = model.predict(X)
     return preds
 
-def save_model(model_obj, name):
-    """_summary_
 
-    :param model_obj: _description_
+def save_model(model_obj, name):
+    """Save the model to a .pkl file.
+
+    Inputs:
+
+    model_obj: The model to save
+
+    name: The string name for the .pkl file
     """
     path = os.path.abspath(Path(__file__).parent / f"../../model/{name}.pkl")
     joblib.dump(model_obj, path)
 
 
 def compute_performance_slices(df, model, cat_features, encoder, lb):
-    
+
     all_metrics = []
-    
+
     for feature in cat_features:
         for category in df[feature].unique():
             feature_slice = df.loc[df[feature] == category]
-            
+
             # Reprocess data for slice inference
-            
-            X, y, _, _ = process_data(feature_slice, cat_features, label="salary", training=False, encoder=encoder, lb=lb)
+
+            X, y, _, _ = process_data(
+                feature_slice,
+                cat_features,
+                label="salary",
+                training=False,
+                encoder=encoder,
+                lb=lb,
+            )
             predict = inference(model, X)
-            
+
             precision, recall, fbeta = compute_model_metrics(y, predict)
-        
-            metric_data = f"{feature} = {category}  | precision: {precision}, recall: {recall}, fbeta: {fbeta}"
+
+            metric_data = f"{feature} = {category}  | precision: {precision}, \
+                recall: {recall}, fbeta: {fbeta}"
             all_metrics.append(metric_data)
-        
+
     export_slices_to_txt(all_metrics)
-        
-            
+
+
 def export_slices_to_txt(data):
-    path = os.path.abspath(Path(__file__).parent / f"../slice_data/")
-    with open(os.path.join(path, 'slice_output.txt'), 'w') as f:
+    path = os.path.abspath(Path(__file__).parent / "../slice_data/")
+    with open(os.path.join(path, "slice_output.txt"), "w") as f:
         for line in data:
             f.write(f"{line}\n")
-        
