@@ -1,4 +1,7 @@
 import numpy as np
+import pandas as pd
+import os
+from pathlib import Path
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
 
 
@@ -68,3 +71,12 @@ def process_data(
 
     X = np.concatenate([X_continuous, X_categorical], axis=1)
     return X, y, encoder, lb
+
+def get_data():
+    try:
+        path = os.path.abspath(Path(__file__).parent / "../../data/census.csv")
+        data = pd.read_csv(path)
+        return data
+    except FileNotFoundError:
+        print(f"Couldn't find data at {path}. Please check the data source.")
+        return 0

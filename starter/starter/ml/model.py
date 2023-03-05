@@ -1,7 +1,12 @@
+import joblib
+
 from sklearn.metrics import fbeta_score, precision_score, recall_score
+from sklearn.ensemble import RandomForestClassifier
+from ml.data import process_data
+from pathlib import Path
+import os
 
 
-# Optional: implement hyperparameter tuning.
 def train_model(X_train, y_train):
     """
     Trains a machine learning model and returns it.
@@ -17,8 +22,11 @@ def train_model(X_train, y_train):
     model
         Trained machine learning model.
     """
-
-    pass
+    
+    rfc = RandomForestClassifier(random_state=42)
+    rfc.fit(X_train, y_train)
+    
+    return rfc
 
 
 def compute_model_metrics(y, preds):
@@ -57,4 +65,42 @@ def inference(model, X):
     preds : np.array
         Predictions from the model.
     """
-    pass
+    preds = model.predict(X)
+    return preds
+
+def save_model(model_obj, name):
+    """_summary_
+
+    :param model_obj: _description_
+    """
+    path = os.path.abspath(Path(__file__).parent / f"../../model/{name}.pkl")
+    joblib.dump(model_obj, path)
+
+
+def compute_performance_slices(df, model, cat_features, encoder, lb):
+    
+    all_metrics = []
+    
+    for feature in cat_features:
+        for category in df[feature].unique():
+            feature_slice = df.loc[df[feature] == category]
+            
+            # Reprocess data for slice inference
+            
+            X, y, _, _ = process_data(feature_slice, cat_features, label="salary", training=False, encoder=encoder, lb=lb)
+            predict = inference(model, X)
+            
+            precision, recall, fbeta = compute_model_metrics(y, predict)
+        
+            metric_data = f"{feature} = {category}  | precision: {precision}, recall: {recall}, fbeta: {fbeta}"
+            all_metrics.append(metric_data)
+        
+    export_slices_to_txt(all_metrics)
+        
+            
+def export_slices_to_txt(data):
+    path = os.path.abspath(Path(__file__).parent / f"../slice_data/")
+    with open(os.path.join(path, 'slice_output.txt'), 'w') as f:
+        for line in data:
+            f.write(f"{line}\n")
+        
