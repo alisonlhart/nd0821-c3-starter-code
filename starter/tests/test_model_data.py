@@ -1,0 +1,46 @@
+import pytest
+import pandas as pd
+import numpy as np
+
+from sklearn.preprocessing import OneHotEncoder, LabelBinarizer
+
+from src.ml.model import train_model, save_model, compute_performance_slices
+    
+from src.ml.data import get_data, process_data
+from sklearn.model_selection import train_test_split
+
+
+@pytest.fixture()
+def data():
+    return get_data()
+
+
+@pytest.fixture()
+def cat_features():
+    cat_feature_list = [
+        "workclass",
+        "education",
+        "marital-status",
+        "occupation",
+        "relationship",
+        "race",
+        "sex",
+        "native-country",
+    ]
+    return cat_feature_list
+
+
+def test_process_data(data, cat_features):
+    train, test = train_test_split(data, test_size=0.20)
+
+    X_train, y_train, encoder, lb = process_data(
+        train, cat_features, label="salary", training=True
+    )
+    assert isinstance(X_train, np.ndarray)
+    assert isinstance(y_train, np.ndarray)
+    assert isinstance(encoder, OneHotEncoder)
+    assert isinstance(lb, LabelBinarizer)
+
+
+def test_get_data(data):
+    assert isinstance(data, pd.DataFrame)
