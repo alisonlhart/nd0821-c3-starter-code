@@ -6,9 +6,8 @@ from sklearn.preprocessing import OneHotEncoder, LabelBinarizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-from src.ml.model import train_model 
+from src.ml.model import train_model
 from src.ml.data import get_data, process_data
-
 
 
 @pytest.fixture()
@@ -45,15 +44,15 @@ def test_process_data(data, cat_features):
 
 def test_get_data(data):
     assert isinstance(data, pd.DataFrame)
-    
+
+
 def test_train_model(data, cat_features):
     train, _ = train_test_split(data, test_size=0.20)
 
     X_train, y_train, _, _ = process_data(
         train, cat_features, label="salary", training=True
     )
-    
+
     model = train_model(X_train, y_train)
-    
+
     assert isinstance(model, RandomForestClassifier)
-    
