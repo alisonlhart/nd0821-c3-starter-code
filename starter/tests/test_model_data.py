@@ -3,11 +3,12 @@ import pandas as pd
 import numpy as np
 
 from sklearn.preprocessing import OneHotEncoder, LabelBinarizer
-
-from src.ml.model import train_model, save_model, compute_performance_slices
-    
-from src.ml.data import get_data, process_data
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+
+from src.ml.model import train_model 
+from src.ml.data import get_data, process_data
+
 
 
 @pytest.fixture()
@@ -31,7 +32,7 @@ def cat_features():
 
 
 def test_process_data(data, cat_features):
-    train, test = train_test_split(data, test_size=0.20)
+    train, _ = train_test_split(data, test_size=0.20)
 
     X_train, y_train, encoder, lb = process_data(
         train, cat_features, label="salary", training=True
@@ -44,3 +45,15 @@ def test_process_data(data, cat_features):
 
 def test_get_data(data):
     assert isinstance(data, pd.DataFrame)
+    
+def test_train_model(cat_features):
+    train, _ = train_test_split(data, test_size=0.20)
+
+    X_train, y_train, _, _ = process_data(
+        train, cat_features, label="salary", training=True
+    )
+    
+    model = train_model(X_train, y_train)
+    
+    assert isinstance(model, RandomForestClassifier)
+    
