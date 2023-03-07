@@ -46,7 +46,7 @@ def test_process_data(data, cat_features):
 def test_get_data(data):
     assert isinstance(data, pd.DataFrame)
     
-def test_train_model(cat_features):
+def test_train_model(data, cat_features):
     train, _ = train_test_split(data, test_size=0.20)
 
     X_train, y_train, _, _ = process_data(
