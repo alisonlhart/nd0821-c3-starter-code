@@ -83,12 +83,11 @@ def save_model(model_obj, name):
     joblib.dump(model_obj, path)
 
 
-def load_model(model, encoder_model):
+def load_model(model):
 
-    encoder_loaded = joblib.load(encoder_model)
     model_loaded = joblib.load(model)
 
-    return model_loaded, encoder_loaded
+    return model_loaded
 
 
 def compute_performance_slices(df, model, cat_features, encoder, lb):
