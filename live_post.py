@@ -19,4 +19,5 @@ test_data = {
     
 post = requests.post(url="https://udacity-continuous.herokuapp.com/inferring", json=test_data)
 
-print(post.status_code)
+print(f"The post request passed with code: {post.status_code}")
+print(f"Model inference result: {post.json()}")
