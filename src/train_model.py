@@ -3,8 +3,8 @@
 import logging
 
 from sklearn.model_selection import train_test_split
-from ml.data import process_data, get_data
-from ml.model import (
+from src.ml.data import process_data, get_data
+from src.ml.model import (
     train_model,
     save_model,
     compute_performance_slices,
