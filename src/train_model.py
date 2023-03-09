@@ -3,8 +3,14 @@
 import logging
 
 from sklearn.model_selection import train_test_split
-from src.ml.data import process_data, get_data
-from src.ml.model import train_model, save_model, compute_performance_slices
+from ml.data import process_data, get_data
+from ml.model import (
+    train_model,
+    save_model,
+    compute_performance_slices,
+    compute_model_metrics,
+    inference,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 logger = logging.getLogger()
@@ -49,6 +55,15 @@ def go():
 
     logger.info("Train model on training data")
     model = train_model(X_train, y_train)
+
+    logger.info("Calculate model metrics")
+    preds = inference(model, X_train)
+    precision, recall, fbeta = compute_model_metrics(y_train, preds)
+
+    logger.info(
+        f"Model metrics: precision:{precision}, recall: {recall}, \
+        fbeta: {fbeta}"
+    )
 
     logger.info("Save models")
     save_model(model, "model")

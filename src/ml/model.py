@@ -2,7 +2,7 @@ import joblib
 
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.ensemble import RandomForestClassifier
-from src.ml.data import process_data
+from ml.data import process_data
 from pathlib import Path
 import os
 
