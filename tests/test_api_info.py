@@ -34,7 +34,7 @@ def test_post_below():
     
     response = client.post("/inferring", data=json.dumps(test_data))
     response_output = response.json()
-    assert response.status_code != 200
+    assert response.status_code == 200
     assert response_output == [0]
 
 
@@ -58,5 +58,5 @@ def test_post_above():
     
     response = client.post("/inferring", data=json.dumps(test_data))
     response_output = response.json()
-    assert response.status_code != 200
+    assert response.status_code == 200
     assert response_output == [1]
